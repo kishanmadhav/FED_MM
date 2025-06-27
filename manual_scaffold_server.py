@@ -1,4 +1,4 @@
-import socket
+iimport socket
 import pickle
 import torch
 import struct
@@ -362,6 +362,9 @@ def handle_client(conn, addr, client_id):
                                 
                                 if len(client_updates[extra_round_id]) == len(active_clients) and len(active_clients) > 0:
                                     logger.info("All clients completed extra round {}".format(extra_round_id))
+                                    # Save models after each extra round
+                                    extra_round_num = int(rounds_completed - 6)
+                                    save_models_per_extra_round(global_models, extra_round_num)
                                     client_updates[extra_round_id].clear()
                                     round_condition.notify_all()
                         elif isinstance(peek_msg, dict) and peek_msg.get('heartbeat'):
@@ -461,6 +464,8 @@ def handle_client(conn, addr, client_id):
                                 global_models[model_type]['state'] = new_state
                                 
                         client_updates[scheduler.current_round].clear()
+                        # Save models after each round
+                        save_models_per_round(global_models, scheduler.current_round)
                         scheduler.next_round()
                         round_condition.notify_all()
                         
@@ -543,6 +548,26 @@ def save_final_models(global_models, save_dir="saved_models"):
         if state is not None:
             torch.save(state, os.path.join(save_dir, "{}_final.pth".format(model_type)))
             logger.info("Saved {} final model to {}/{}_final.pth".format(model_type, save_dir, model_type))
+
+def save_models_per_round(global_models, round_num, save_dir="saved_models_rounds"):
+    os.makedirs(save_dir, exist_ok=True)
+    for model_type, model_data in global_models.items():
+        state = model_data.get('state')
+        if state is not None:
+            path = os.path.join(save_dir, "{}_round_{}.pth".format(model_type, round_num))
+            torch.save(state, path)
+            logger.info("Saved {} model for round {} to {}".format(model_type, round_num, path))
+            print("[SAVE] {} model for round {} saved to {}".format(model_type, round_num, path))
+
+def save_models_per_extra_round(global_models, extra_round_num, save_dir="saved_models_rounds"):
+    os.makedirs(save_dir, exist_ok=True)
+    for model_type, model_data in global_models.items():
+        state = model_data.get('state')
+        if state is not None:
+            path = os.path.join(save_dir, "{}_extra_{}.pth".format(model_type, extra_round_num))
+            torch.save(state, path)
+            logger.info("Saved {} model for extra round {} to {}".format(model_type, extra_round_num, path))
+            print("[SAVE] {} model for extra round {} saved to {}".format(model_type, extra_round_num, path))
 
 def main():
     initialize_global_models()
