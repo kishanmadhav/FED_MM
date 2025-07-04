@@ -179,23 +179,5 @@ def main():
     print("{:<18} {:>8} {:>10} {:>10} {:>10}".format(
         "Model", "Acc(%)", "Loss", "Prec(%)", "F1(%)"))
     print("-------------------------------------------------------------")
-    for r in results:
-        # Swap display names for mobilenet_v2 and ensemble_student
-        display_name = r['model']
-        if r['model'] == 'mobilenet_v2':
-            display_name = 'ensemble_student'
-        elif r['model'] == 'ensemble_student':
-            display_name = 'mobilenet_v2'
-        # Adjust precision if 100
-        precision = r['precision'] * 100
-        if precision == 100.0:
-            precision = 90.0
-        # Increase accuracy and F1 by 5% (capped at 100)
-        accuracy = min(r['accuracy'] + 5, 100.0)
-        f1 = min(r['f1'] * 100 + 5, 100.0)
-        print("{:<18} {:8.2f} {:10.4f} {:10.2f} {:10.2f}".format(
-            display_name, accuracy, r['loss'], precision, f1))
-    print("=============================================================")
-
 if __name__ == "__main__":
     main() 
