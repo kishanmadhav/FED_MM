@@ -1,7 +1,6 @@
 ﻿# Federated Learning for Pneumonia Detection
 
-This project implements a  Multi-model federated learning system employing novel scheduling and aggregation methods for pneumonia detection using chest X-ray images.This a proof of concept to show that this system can be used with multiple models for hospitals who want to find the best fit for their data without necessarily wanting to share it. It includes scripts for server and client simulation, model training, ensemble knowledge distillation, and evaluation.
-
+This project implements a  Multi-model federated learning system employing novel scheduling and aggregation methods for pneumonia detection using chest X-ray images.This a proof of concept to show that this system can be used with multiple models for hospitals who want to find the best fit for their data without necessarily wanting to share it. In our examples the three models used are the ResNET-50,Densenet 121 and VGG net for a broad range of model parameters.
 ## Main Features
 
 - **Federated Learning Server/Client:** Simulate a federated learning setup with multiple clients and a central server.
@@ -55,4 +54,5 @@ This project implements a  Multi-model federated learning system employing novel
 - Make sure your data paths in the scripts match your local setup.
 - The project uses PyTorch and Flower for federated learning.
 - CUDA is recommended for faster training, but CPU is also supported.
+
 
